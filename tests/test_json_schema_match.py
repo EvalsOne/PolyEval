@@ -3,8 +3,8 @@ import pytest
 import os, sys, json
 from datasets import Dataset
 from jsonschema import Draft7Validator
-from zeval.evaluation import evaluate
-from zeval.evaluators import JsonSchemaMatch
+from polyeval.evaluation import evaluate
+from polyeval.evaluators import JsonSchemaMatch
 
 # 创建一个测试用的schema
 schema = {
@@ -54,11 +54,11 @@ dataset = Dataset.from_dict({
         '{"name": "Weather Report", "description": "Daily weather updates", "parameters": {"unit": "c"}}']
 })
 
-@pytest.mark.parametrize("evaluators, lang, schema", [
+@pytest.mark.parametrize("evaluators, lang, kwargs", [
     ([JsonSchemaMatch], "en", {"schema": schema}),
 ])
-def test_json_schema_match(evaluators, lang, schema):
-    eval_results = evaluate(dataset, evaluators, schema, lang)
+def test_json_schema_match(evaluators, lang, kwargs):
+    eval_results = evaluate(dataset, evaluators, lang, **kwargs)
     
     # format the results
     formatted_results = json.dumps(eval_results, indent=4, ensure_ascii=False)

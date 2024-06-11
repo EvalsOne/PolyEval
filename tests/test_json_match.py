@@ -1,8 +1,8 @@
 import pytest
 import os, sys, json
 from datasets import Dataset
-from zeval.evaluation import evaluate
-from zeval.evaluators import JsonMatch
+from polyeval.evaluation import evaluate
+from polyeval.evaluators import JsonMatch
 from unittest.mock import patch, MagicMock
 from dotenv import load_dotenv
 load_dotenv()
@@ -26,13 +26,11 @@ dataset = Dataset.from_dict({
     ]
 })
 
-rules = {}
-
-@pytest.mark.parametrize("evaluators, lang, rules", [
+@pytest.mark.parametrize("evaluators, lang, kwargs", [
     ([JsonMatch], "zh", {})
 ])
-def test_json(evaluators, lang, rules):
-    eval_results = evaluate(dataset, evaluators, rules, lang)
+def test_json_match(evaluators, lang, kwargs):
+    eval_results = evaluate(dataset, evaluators, lang, **kwargs)
     # print eval results
     formatted_results = json.dumps(eval_results, indent=4, ensure_ascii=False)
     print(formatted_results)

@@ -2,7 +2,7 @@ import pytest
 import os, sys
 from datasets import Dataset
 from polyeval.evaluation import evaluate
-from polyeval.evaluators import Faithfulness, AnswerRelevancy, ContextRecall, ContextPrecision
+from polyeval.evaluators import LLMSimilarity
 from unittest.mock import patch, MagicMock
 from dotenv import load_dotenv
 load_dotenv()
@@ -33,19 +33,10 @@ kwargs = {}
 kwargs["llm"] = eval_params
 
 @pytest.mark.parametrize("evaluators, lang, kwargs", [
-    ([Faithfulness], "zh", kwargs),
-    ([AnswerRelevancy], "zh", kwargs),
-    ([ContextPrecision], "zh", kwargs),
-    ([ContextRecall], "zh", kwargs),
-    ([Faithfulness], "en", kwargs),
-    ([AnswerRelevancy], "en", kwargs),
-    ([ContextPrecision], "en", kwargs),
-    ([ContextRecall], "en", kwargs),
-    # ([Faithfulness, AnswerRelevancy, ContextPrecision, ContextRecall], "zh"),
-    # ([Faithfulness, AnswerRelevancy, ContextPrecision, ContextRecall], "en")
+    ([LLMSimilarity], "zh", kwargs)
 ])
 
-def test_rag(evaluators, lang, kwargs):
+def test_llm_similarity(evaluators, lang, kwargs):
     eval_results = evaluate(dataset, evaluators, lang, **kwargs)
     
     print(eval_results)
