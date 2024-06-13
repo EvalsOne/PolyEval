@@ -36,22 +36,21 @@ class CustomYaml:
         """
         
         yaml_spec = kwargs.get("yaml_spec")
-        
-        print("类型",type(yaml_spec))
+                
         if isinstance(yaml_spec, str):
-            self.yaml_config = get_yaml_spec_from_string(kwargs.get("yaml_spec"))
+            yaml_config = get_yaml_spec_from_string(kwargs.get("yaml_spec"))
         elif yaml_spec.prompt:
-            self.yaml_config = yaml_spec
+            yaml_config = yaml_spec
         else:
-            return False, "No yaml spec provided"            
+            return False, "No yaml spec provided"
         
-        if self.yaml_config.prompt:
-            self.yaml_config.prompt = self.yaml_config.prompt.format(completion=sampled, input=question, ideal=ideal_string, criteria=criteria, context=context_string)
+        if yaml_config.prompt:
+            yaml_config.prompt = yaml_config.prompt.format(completion=sampled, input=question, ideal=ideal_string, criteria=criteria, context=context_string)
 
         # run modelgraded eval
-        classify_result = classify(
+        classify_result = run_classify(
             self,
-            mg_specs=self.yaml_config,
+            mg_specs=yaml_config,
             sample_kwargs=sample_kwargs,
         )
         
@@ -69,13 +68,12 @@ class CustomYaml:
                 "pass_eval": classify_result['pass_eval'],
                 "reasoning": reasoning,
                 "responses": responses
-            }
-                        
+            }                        
             return eval_result
         except Exception as e:
             return False, str(e)
         
-def classify(
+def run_classify(
     self,
     mg_specs: ModelGradedSpec,
     sample_kwargs: Optional[dict[str, Any]] = None,
@@ -84,8 +82,6 @@ def classify(
 ) -> str:
     sample_kwargs = sample_kwargs or {}
     
-    print("mg_specs", mg_specs)
-
     # get choice strings
     if mg_specs.choice_strings is not None:
         choice_strings = get_choice_strings(mg_specs.choice_strings, n=n)
@@ -141,7 +137,7 @@ def classify(
     else:
         score = None
         
-    if score > 0 and mg_specs.threshold:
+    if score >= 0 and mg_specs.threshold:
         pass_eval = score >= mg_specs.threshold
     else:
         pass_eval = None

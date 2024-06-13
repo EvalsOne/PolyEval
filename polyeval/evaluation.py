@@ -8,7 +8,6 @@ def evaluate(dataset: Dataset, evaluators: list, lang='en', **kwargs):
         dimension_results = []
         eval_instance = evaluator(lang=lang)
         for i in range(len(dataset)):
-            print("kwargs in:", kwargs)
             result = eval_instance.eval(dataset[i],**kwargs)
             dimension_results.append(result)
         all_results.append(dimension_results)

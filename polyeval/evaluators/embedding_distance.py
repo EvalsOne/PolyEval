@@ -39,6 +39,8 @@ class EmbeddingDistanceEvaluator:
         """
         measure the embedding distance between the question and the ideal answers
         """
+        
+        print("metric in:", metric)
         evaluator = load_evaluator(
             "embedding_distance", distance_metric=metric, embedding_model = embedingModel
         )
