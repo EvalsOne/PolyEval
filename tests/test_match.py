@@ -1,8 +1,8 @@
 import pytest
 import os, sys, json
 from datasets import Dataset
-from zeval.evaluation import evaluate
-from zeval.evaluators import Matchness
+from polyeval.evaluation import evaluate
+from polyeval.evaluators import Matchness
 from unittest.mock import patch, MagicMock
 from dotenv import load_dotenv
 load_dotenv()
@@ -15,9 +15,9 @@ dataset = Dataset.from_dict({
     'ideal': [["paris", "Paris"], ["George Washington", "Washington"]]
 })
 
-match_rules = ['match', 'include', 'startswith', 'endswith', 'fuzzy_match']
+# match_rules = ['match', 'include', 'startswith', 'endswith', 'fuzzy_match']
 
-@pytest.mark.parametrize("evaluators, lang, rules", [
+@pytest.mark.parametrize("evaluators, lang, kwargs", [
     ([Matchness], "zh", {"match_rule": "match", "ignore_case": True}),
     ([Matchness], "zh", {"match_rule": "match", "ignore_case": False}),
     ([Matchness], "zh", {"match_rule": "include", "ignore_case": True}),
@@ -29,8 +29,8 @@ match_rules = ['match', 'include', 'startswith', 'endswith', 'fuzzy_match']
     ([Matchness], "zh", {"match_rule": "fuzzy_match", "ignore_case": True}),
     ([Matchness], "zh", {"match_rule": "fuzzy_match", "ignore_case": False}),
 ])
-def test_match(evaluators, lang, rules):
-    eval_results = evaluate(dataset, evaluators, rules, lang)
+def test_match(evaluators, lang, kwargs):
+    eval_results = evaluate(dataset, evaluators, lang, **kwargs)
     # print eval results
     formatted_results = json.dumps(eval_results, indent=4, ensure_ascii=False)
     print(formatted_results)
