@@ -19,7 +19,7 @@ pip install -e .
 
 ## 使用方式
 
-调用方式示例：
+### 调用方式示例：
 
 ```python
 import os
@@ -43,13 +43,15 @@ eval_results = evaluate(dataset, [faithfulness], "en", **kwargs)
 
 如果评估中需要调用大语言模型，则需要在kwargs中包含`llm`参数，并将调用模型所需的参数都包含在字典中；如果评估中需要调用嵌入模型，则需要在kwargs中包含`embedding`参数，并将调用模型所需的参数都包含在字典中。
 
+### 结果参数说明：
+
 | 参数名称        | 格式说明                                                        |
 |-----------------|-----------------------------------------------------------------|
 | grade           | 整数/字符串格式，表示评估的等级                                   |
 | score           | 浮点数格式，表示评估的分数                                      |
 | pass_eval       | 布尔值格式，表示评估是否通过                                    |
 | reasoning       | 字符串格式，提供评估的详细原因或解释                              |
-| responses       | 对象列表格式，其中包含每次大模型调用的ModelResponse对象。<br/>每个对象中额外封装了一些其他属性，具体包括： |
+| responses       | 对象列表格式，其中包含每次大模型调用的ModelResponse对象。<br/>每个对象中额外封装了一些其他属性。 |
 
 ModelResponse对象结构中的额外属性：
 | 属性名称        | 格式说明                              |
@@ -90,19 +92,19 @@ ModelResponse对象结构中的额外属性：
 
 | 评估器名称 | 分类       | 评估器介绍                   | 实现机制  | 所需kwargs参数                | 所需数据组件                   |
 |---------------------|---------------|----------------------|-------------|------------------|------------------------|
-| [Faithfulness](/polyeval/faithfulness.py)       | RAG评估          | 评估生成结果的准确性              | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                    |     `answer` `context`     |
-| [AnswerRelevancy](/polyeval/answer_relevancy.py)    | RAG评估          | 评估生成结果回答的相关性            | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                 |     `question` `answer`       |
-| [ContextRecall](/polyeval/context_recall.py)      | RAG评估          | 评估上下文召回率                | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                 |   `context` `ideal`   |
-| [ContextPrecision](/polyeval/context_precision.py)   | RAG评估          | 评估上下文准确性                | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                 | `question` `context` |
-| [CustomYaml](/polyeval/custom_yaml.py)         | 大模型评估         | 基于自定义的YAML配置进行评估    | 基于大模型提示语       |  `yaml_specs`: 评估配置文件, yaml格式<br/>  `llm`: 生成模型的调用参数，字典格式           |  `question` `answer` `context` `ideal`    |
-| [StringDistanceEvaluator](/polyeval/string_distance.py)          | 文本相似度         | 比较字符串之间的距离             | 基于比较算法 | `metric`: 文本比较算法，字符串格式式                |     `answer` `ideal`     |
-| [EmbeddingDistanceEvaluator](/polyeval/embedding_distance.py)           | 文本相似度         | 基于向量嵌入的距离计算相似度         | 基于嵌入模型和比较算法     | `metric`: 向量比较算法，字符串格式<br/> `embedding`: 生成模型的调用参数，字典格式<br/>                 |    `answer` `ideal`    |
-| [LLMSimilarity](/polyeval/llm_similarity.py)        | 文本相似度         | 使用大模型进行语义层面的比较        | 基于大模型提示语    |      `llm`: 生成模型的调用参数，字典格式           |      `answer` `ideal`          |
-| [IsJson](/polyeval/json.py)           | JSON评估        | 校验JSON的格式是否正确           | 基于规则 |                   |       `answer`        |
-| [JsonMatch](/polyeval/json.py)       | JSON评估        | 评估JSON数据的一致性             | 基于规则 |                   |    `answer` `ideal`     |
-| [JsonSchemaMatch](/polyeval/json.py) | JSON评估        | 校验JSON是否符合预定义的Schema    | 基于规则 | `schema`: 预定义的JSON schema，JSON格式 |   `answer`   |
-| [Matchness](/polyeval/matchness.py)           | 文本匹配      | 通过多种方式比较生成结果与理想答案是否匹配           | 基于规则 |  `match_rule`: 匹配规则<br/>   `ignore_case`: 是否忽略大小写          |   `answer` `ideal`   |
-| [Regex](/polyeval/regex.py)           | 正则表达式评估      | 自定义正则表达式进行评估           | 基于规则 |  `regex`: 用于校验的正则表达式             |   `answer` `ideal`   |
+| [Faithfulness](/polyeval/evaluators/faithfulness.py)       | RAG评估          | 评估生成结果的准确性              | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                    |     `answer` `context`     |
+| [AnswerRelevancy](/polyeval/evaluators/answer_relevancy.py)    | RAG评估          | 评估生成结果回答的相关性            | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                 |     `question` `answer`       |
+| [ContextRecall](/polyeval/evaluators/context_recall.py)      | RAG评估          | 评估上下文召回率                | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                 |   `context` `ideal`   |
+| [ContextPrecision](/polyeval/evaluators/context_precision.py)   | RAG评估          | 评估上下文准确性                | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                 | `question` `context` |
+| [CustomYaml](/polyeval/evaluators/custom_yaml.py)         | 大模型评估         | 基于自定义的YAML配置进行评估    | 基于大模型提示语       |  `yaml_specs`: 评估配置文件, yaml格式<br/>  `llm`: 生成模型的调用参数，字典格式           |  `question` `answer` `context` `ideal`    |
+| [StringDistanceEvaluator](/polyeval/evaluators/string_distance.py)          | 文本相似度         | 比较字符串之间的距离             | 基于比较算法 | `metric`: 文本比较算法，字符串格式式                |     `answer` `ideal`     |
+| [EmbeddingDistanceEvaluator](/polyeval/evaluators/embedding_distance.py)           | 文本相似度         | 基于向量嵌入的距离计算相似度         | 基于嵌入模型和比较算法     | `metric`: 向量比较算法，字符串格式<br/> `embedding`: 生成模型的调用参数，字典格式<br/>                 |    `answer` `ideal`    |
+| [LLMSimilarity](/polyeval/evaluators/llm_similarity.py)        | 文本相似度         | 使用大模型进行语义层面的比较        | 基于大模型提示语    |      `llm`: 生成模型的调用参数，字典格式           |      `answer` `ideal`          |
+| [IsJson](/polyeval/evaluators/json.py)           | JSON评估        | 校验JSON的格式是否正确           | 基于规则 |                   |       `answer`        |
+| [JsonMatch](/polyeval/evaluators/json.py)       | JSON评估        | 评估JSON数据的一致性             | 基于规则 |                   |    `answer` `ideal`     |
+| [JsonSchemaMatch](/polyeval/evaluators/json.py) | JSON评估        | 校验JSON是否符合预定义的Schema    | 基于规则 | `schema`: 预定义的JSON schema，JSON格式 |   `answer`   |
+| [Matchness](/polyeval/evaluators/matchness.py)           | 文本匹配      | 通过多种方式比较生成结果与理想答案是否匹配           | 基于规则 |  `match_rule`: 匹配规则<br/>   `ignore_case`: 是否忽略大小写          |   `answer` `ideal`   |
+| [Regex](/polyeval/evaluators/regex.py)           | 正则表达式评估      | 自定义正则表达式进行评估           | 基于规则 |  `regex`: 用于校验的正则表达式             |   `answer` `ideal`   |
 
 
 ## 多语言支持

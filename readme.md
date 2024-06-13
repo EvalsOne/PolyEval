@@ -2,8 +2,6 @@
 
  English Version | [中文版](/docs/zh/readme.md)
 
-
-
 PolyEval is a diversified evaluation framework for LLM systems. It inherits numerous evaluators based on large language model prompts and algorithmic rules, natively supports multilingual prompt templates and evaluation rationales, can easily integrate various generative and embedding models, can extend custom evaluators easily based on YAML, and the project's size is very small.
 
 ## Installation
@@ -20,7 +18,7 @@ pip install -e .
 
 ## Usage
 
-Example of usage:
+### Example of usage:
 
 ```python
 import os
@@ -44,13 +42,15 @@ Here, `Faithfulness` is a RAG evaluator, `dataset` is a dataset containing the q
 
 If a large language model needs to be called during evaluation, the `llm` parameters must be included in kwargs, with all required model parameters included in the dictionary; if an embedding model needs to be called during evaluation, the `embedding` parameters must be included in kwargs, with all required model parameters included in the dictionary.
 
+### Explanation of Result Parameters:
+
 | Parameter Name   | Description                                                     |
 |------------------|-----------------------------------------------------------------|
-| grade            | Integer/String format, indicating the evaluation grade          |
+| grade            | String format, indicating the evaluation grade          |
 | score            | Float format, indicating the evaluation score                   |
 | pass_eval        | Boolean format, indicating whether the evaluation passed        |
 | reasoning        | String format, providing detailed reasons or explanations for the evaluation |
-| responses        | List of objects, each containing a ModelResponse object. <br/> Each object additionally encapsulates some other attributes, specifically: |
+| responses        | List of objects, each containing a ModelResponse object. <br/> Each object additionally encapsulates some other attributes. |
 
 Extra attributes in the ModelResponse object structure:
 | Attribute Name   | Description                               |
@@ -90,19 +90,19 @@ Custom regular expression evaluations. The scores range from 0 to 1. 0 means fai
 
 | Evaluator Name           | Category       | Description                          | Implementation Mechanism  | Required kwargs Parameters        | Required Data Components          |
 |--------------------------|----------------|--------------------------------------|---------------------------|-----------------------------------|------------------------------------|
-| [Faithfulness](/polyeval/faithfulness.py)             | RAG Evaluation | Evaluates the accuracy of the generated results | Based on large model prompts  | `llm`: dictionary of model call parameters | `answer` `context`                |
-| [AnswerRelevancy](/polyeval/answer_relevancy.py)          | RAG Evaluation | Evaluates the relevancy of the generated answer | Based on large model prompts  | `llm`: dictionary of model call parameters | `question` `answer`               |
-| [ContextRecall](/polyeval/context_recall.py)            | RAG Evaluation | Evaluates context recall rate        | Based on large model prompts  | `llm`: dictionary of model call parameters | `context` `ideal`                 |
-| [ContextPrecision](/polyeval/context_precision.py)         | RAG Evaluation | Evaluates context precision          | Based on large model prompts  | `llm`: dictionary of model call parameters | `question` `context`              |
-| [CustomYaml](/polyeval/custom_yaml.py)               | Large Model Evaluation | Evaluates based on custom YAML configuration | Based on large model prompts  | `yaml_specs`: YAML format evaluation configuration file <br/> `llm`: dictionary of model call parameters | `question` `answer` `context` `ideal` |
-| [StringDistanceEvaluator](/polyeval/string_distance.py)  | Text Similarity            | Compares the distance between strings     | Based on comparison algorithms | `metric`: text comparison algorithm in string format | `answer` `ideal`                  |
-| [EmbeddingDistanceEvaluator](/polyeval/embedding_distance.py) | Text Similarity         | Computes similarity based on embedding distance | Based on embedding model and comparison algorithms | `metric`: vector comparison algorithm in string format <br/> `embedding`: dictionary of model call parameters | `answer` `ideal`                  |
-| [LLMSimilarity](/polyeval/llm_similarity.py)            | Text Similarity            | Uses large model for semantic comparison  | Based on large model prompts  | `llm`: dictionary of model call parameters | `answer` `ideal`                  |
-| [IsJson](/polyeval/json.py)                   | JSON Evaluation             | Validates JSON format correctness         | Based on rules             |                                    | `answer`                           |
-| [JsonMatch](/polyeval/json.py)                | JSON Evaluation             | Evaluates JSON data consistency           | Based on rules             |                                    | `answer` `ideal`                  |
-| [JsonSchemaMatch](/polyeval/json.py)          | JSON Evaluation             | Validates JSON conformity to predefined schema | Based on rules             | `schema`: predefined JSON schema in JSON format | `answer`                           |
-| [Matchness](/polyeval/matchness.py)                | Text Matching               | Compares generated results with ideal answers using various methods | Based on rules             | `match_rule`: matching rule <br/> `ignore_case`: whether to ignore case | `answer` `ideal`                  |
-| [Regex](/polyeval/regex.py)                    | Regular Expression Evaluation | Custom evaluations using regular expressions | Based on rules             | `regex`: regular expression for validation | `answer` `ideal`                  |
+| [Faithfulness](/polyeval/evaluators/faithfulness.py)             | RAG Evaluation | Evaluates the accuracy of the generated results | Based on large model prompts  | `llm`: dictionary of model call parameters | `answer` `context`                |
+| [AnswerRelevancy](/polyeval/evaluators/answer_relevancy.py)          | RAG Evaluation | Evaluates the relevancy of the generated answer | Based on large model prompts  | `llm`: dictionary of model call parameters | `question` `answer`               |
+| [ContextRecall](/polyeval/evaluators/context_recall.py)            | RAG Evaluation | Evaluates context recall rate        | Based on large model prompts  | `llm`: dictionary of model call parameters | `context` `ideal`                 |
+| [ContextPrecision](/polyeval/evaluators/context_precision.py)         | RAG Evaluation | Evaluates context precision          | Based on large model prompts  | `llm`: dictionary of model call parameters | `question` `context`              |
+| [CustomYaml](/polyeval/evaluators/custom_yaml.py)               | Large Model Evaluation | Evaluates based on custom YAML configuration | Based on large model prompts  | `yaml_specs`: YAML format evaluation configuration file <br/> `llm`: dictionary of model call parameters | `question` `answer` `context` `ideal` |
+| [StringDistanceEvaluator](/polyeval/evaluators/string_distance.py)  | Text Similarity            | Compares the distance between strings     | Based on comparison algorithms | `metric`: text comparison algorithm in string format | `answer` `ideal`                  |
+| [EmbeddingDistanceEvaluator](/polyeval/evaluators/embedding_distance.py) | Text Similarity         | Computes similarity based on embedding distance | Based on embedding model and comparison algorithms | `metric`: vector comparison algorithm in string format <br/> `embedding`: dictionary of model call parameters | `answer` `ideal`                  |
+| [LLMSimilarity](/polyeval/evaluators/llm_similarity.py)            | Text Similarity            | Uses large model for semantic comparison  | Based on large model prompts  | `llm`: dictionary of model call parameters | `answer` `ideal`                  |
+| [IsJson](/polyeval/evaluators/json.py)                   | JSON Evaluation             | Validates JSON format correctness         | Based on rules             |                                    | `answer`                           |
+| [JsonMatch](/polyeval/evaluators/json.py)                | JSON Evaluation             | Evaluates JSON data consistency           | Based on rules             |                                    | `answer` `ideal`                  |
+| [JsonSchemaMatch](/polyeval/evaluators/json.py)          | JSON Evaluation             | Validates JSON conformity to predefined schema | Based on rules             | `schema`: predefined JSON schema in JSON format | `answer`                           |
+| [Matchness](/polyeval/evaluators/matchness.py)                | Text Matching               | Compares generated results with ideal answers using various methods | Based on rules             | `match_rule`: matching rule <br/> `ignore_case`: whether to ignore case | `answer` `ideal`                  |
+| [Regex](/polyeval/evaluators/regex.py)                    | Regular Expression Evaluation | Custom evaluations using regular expressions | Based on rules             | `regex`: regular expression for validation | `answer` `ideal`                  |
 
 ## Multilingual Support
 
