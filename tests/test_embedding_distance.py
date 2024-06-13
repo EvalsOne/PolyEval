@@ -14,6 +14,7 @@ dataset = Dataset.from_dict({
     'ideal': ["The job is done", "The job isn't done"], 
 })
 
+os.environ["OPENAI_API_KEY"]='your_openai_api_key_here'
 embedding_params = {"provider_cls": "BaichuanTextEmbeddings", "model": "Baichuan-Text-Embedding"}
 
 @pytest.mark.parametrize("evaluators, lang, kwargs", [

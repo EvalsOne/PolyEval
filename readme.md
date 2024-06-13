@@ -1,23 +1,26 @@
- # PolyEval: A Multilingual Evaluation Framework for LLM Systems
+# PolyEval: A Multilingual Evaluation Framework for LLM-based Systems
 
- 
- PolyEval是一个多元化的针对LLM系统的评估框架。它继承了众多基于大语言模型提示语和算法规则的评估器，原生支持多语言的提示语模版和评估理由，方便接入各种生成和嵌入模型，可以基于YAML轻松扩展自己的评估器，而且项目的体积非常小。
+ English Version | [中文版](/docs/zh/readme.md)
 
-## 安装方式
+
+
+PolyEval is a diversified evaluation framework for LLM systems. It inherits numerous evaluators based on large language model prompts and algorithmic rules, natively supports multilingual prompt templates and evaluation rationales, can easily integrate various generative and embedding models, can extend custom evaluators easily based on YAML, and the project's size is very small.
+
+## Installation
 
 ```bash
 pip install polyeval
 ```
 
-如果需要在本地进行开发，可以通过以下方式安装：
+If you need to develop locally, you can install it in the following way:
 
 ```bash
 pip install -e .
 ```
 
-## 使用方式
+## Usage
 
-调用方式示例：
+Example of usage:
 
 ```python
 import os
@@ -37,83 +40,86 @@ kwargs = {}
 kwargs[`llm`] = {`provider`: `openai`, `model`: `gpt-4o`, `temperature`: 0.0}
 eval_results = evaluate(dataset, [faithfulness], "en", **kwargs)
 ```
-其中，`Faithfulness`是一个RAG评估器，`dataset`是一个包含了问题、答案、上下文和理想答案的数据集，`en`是提示语模版的语言，`**kwargs`是传递给评估器的参数，不同评估器需要接收的参数是不同的。
+Here, `Faithfulness` is a RAG evaluator, `dataset` is a dataset containing the question, answer, context, and ideal answer, `en` is the language of the prompt template, and `**kwargs` are the parameters passed to the evaluator, which vary for different evaluators.
 
-如果评估中需要调用大语言模型，则需要在kwargs中包含`llm`参数，并将调用模型所需的参数都包含在字典中；如果评估中需要调用嵌入模型，则需要在kwargs中包含`embedding`参数，并将调用模型所需的参数都包含在字典中。
+If a large language model needs to be called during evaluation, the `llm` parameters must be included in kwargs, with all required model parameters included in the dictionary; if an embedding model needs to be called during evaluation, the `embedding` parameters must be included in kwargs, with all required model parameters included in the dictionary.
 
-返回结果对象的格式如下：
-| 参数名称        | 格式说明                               |
-|-----------------|----------------------------------------|
-| grade           | 整数/字符串格式，表示评估的等级                      |
-| score           | 浮点数格式，表示评估的分数                         |
-| pass_eval       | 布尔值格式，表示评估是否通过                       |
-| reasoning       | 字符串格式，提供评估的详细原因或解释                   |
-| responses       | 对象列表格式，其中包含每次大模型调用的ModelResponse对象。每个对象中额外封装了一些其他属性，具体包括：                            |
-| - elapsed_time  | 浮点数格式，表示响应所用的时间（以秒为单位）             |
-| - prompt        | 字符串格式，表示发送给模型的提示语                     |
-| - completion    | 字符串格式，表示模型的生成结果                         |
+| Parameter Name   | Description                                                     |
+|------------------|-----------------------------------------------------------------|
+| grade            | Integer/String format, indicating the evaluation grade          |
+| score            | Float format, indicating the evaluation score                   |
+| pass_eval        | Boolean format, indicating whether the evaluation passed        |
+| reasoning        | String format, providing detailed reasons or explanations for the evaluation |
+| responses        | List of objects, each containing a ModelResponse object. <br/> Each object additionally encapsulates some other attributes, specifically: |
 
-## 支持的评估器种类
+Extra attributes in the ModelResponse object structure:
+| Attribute Name   | Description                               |
+|------------------|-------------------------------------------|
+| elapsed_time     | Float format, indicating the response time (in seconds) |
+| prompt           | String format, indicating the prompt sent to the model |
+| completion       | String format, indicating the model's generated result |
 
-### **RAG评估器** 
-支持RAG评估相关的四种不同评估指标。关于RAG评估体系可以参见[Ragas的介绍文档](https://docs.ragas.io/en/stable/concepts/metrics/index.html)。我们在PolyEval中实现了四种RAG评估器，并实现了模版提示语的多语言支持。结果的评分为0或1之间的任意小数。
+## Supported Evaluators
 
-### **基于YAML进行大模型评估** 
-可以通过传入自定义的YAML配置文件进行大模型评估。这种评估方式的优势在于可以根据具体的评估需求自定义评估模版，从而实现更加灵活的评估。YAML配置文件的格式要求可以参考[https://docs.evalsone.com/Faq/Metrics/setting_custom_rating_metrics/]。结果的形式分为评级、分数和判定三种，具体取决于YAML配置文件。
+### **RAG Evaluators**
+Supports four different evaluation metrics related to RAG. For information on the RAG evaluation system, refer to [Ragas's introduction documentation](https://docs.ragas.io/en/stable/concepts/metrics/index.html). We have implemented four types of RAG evaluators in PolyEval and supported multilingual prompt templates. The scores range from 0 to 1.
 
-### **文本相似度比较** 
-支持多种文本相似度的比较方式，具体包括：
-- 基于字符串距离（调用LangChain的评估器实现），结果得分范围根据具体的比较算法而定。
-- 基于嵌入距离（调用LangChain的评估器实现），结果得分范围根据具体的比较算法而定。
-- 基于大模型进行语义比较，结果的评分为0或1之间的任意小数。
+### **Large Model Evaluations Based on YAML**
+A large model evaluation can be performed by passing a custom YAML configuration file. The advantage of this evaluation method is that evaluation templates can be customized according to specific evaluation needs, for more flexible evaluations. The format requirements for YAML configuration files can be found at [https://docs.evalsone.com/Faq/Metrics/setting_custom_rating_metrics/]. The result can be in the form of ratings, scores, or determinations, depending on the YAML configuration file.
+
+### **Text Similarity Comparisons**
+Supports multiple text similarity comparison methods, specifically:
+- Based on string distance (implemented by calling LangChain's evaluator), the score range depends on the specific comparison algorithm.
+- Based on embedding distance (implemented by calling LangChain's evaluator), the score range depends on the specific comparison algorithm.
+- Based on large models for semantic comparison, scores range from 0 to 1.
     
-### **JSON评估** 
-支持多种JSON相关的评估方式，具体包括：
-- JSON格式校验
+### **JSON Evaluations**
+Supports multiple JSON-related evaluation methods, specifically:
+- JSON format validation
 - JSON Matchness
 - JSON Schema Validate
-结果的评分为0或1。0表示不通过，1表示通过。
+The scores range from 0 to 1. 0 means fail, 1 means pass.
 
-### **文本匹配**
-支持多种文本匹配的方式，具体包括 `match`, `include`, `startswith`, `endswith`, `fuzzy_match`，并可以设置在比较过程中是否忽略大小写。结果的评分为0或1。0表示不通过，1表示通过。
+### **Text Matching**
+Supports multiple text matching methods, specifically `match`, `include`, `startswith`, `endswith`, `fuzzy_match`, and optionally ignoring case in comparisons. The scores range from 0 to 1. 0 means fail, 1 means pass.
 
-### **正则表达式评估** 
-可以通过自定义正则表达式评估。结果的评分为0或1。0表示不通过，1表示通过。
+### **Regular Expression Evaluations**
+Custom regular expression evaluations. The scores range from 0 to 1. 0 means fail, 1 means pass.
 
-## 支持的评估器列表
+## Supported Evaluator List
 
-| 评估器名称 | 分类       | 评估器介绍                   | 实现机制  | 所需kwargs参数                | 所需数据组件                   |
-|---------------------|---------------|----------------------|-------------|------------------|------------------------|
-| Faithfulness       | RAG评估          | 评估生成结果的准确性              | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                    |     `answer` `context`     |
-| AnswerRelevancy    | RAG评估          | 评估生成结果回答的相关性            | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                 |     `question` `answer`       |
-| ContextRecall      | RAG评估          | 评估上下文召回率                | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                 |   `context` `ideal`   |
-| ContextPrecision   | RAG评估          | 评估上下文准确性                | 基于大模型提示语  | `llm`: 生成模型的调用参数，字典格式                 |`question` `context` |
-| CustomYaml         | 大模型评估         | 基于自定义的YAML配置进行评估    | 基于大模型提示语       |  `yaml_specs`: 评估配置文件, yaml格式<br/>  `llm`: 生成模型的调用参数，字典格式           |  `question` `answer` `context` `ideal`    |
-| StringDistanceEvaluator          | 文本相似度         | 比较字符串之间的距离             | 基于比较算法 | `metric`: 文本比较算法，字符串格式式                |     `answer` `ideal`     |
-| EmbeddingDistanceEvaluator           | 文本相似度         | 基于向量嵌入的距离计算相似度         | 基于嵌入模型和比较算法     |`metric`: 向量比较算法，字符串格式`embedding`: 生成模型的调用参数，字典格式<br/>                 |    `answer` `ideal`    |
-| LLMSimilarity        | 文本相似度         | 使用大模型进行语义层面的比较        | 基于大模型提示语    |      `llm`: 生成模型的调用参数，字典格式           |      `answer` `ideal`          |
-| IsJson           | JSON评估        | 校验JSON的格式是否正确           | 基于规则 |                   |       `answer`        |
-| JsonMatch       | JSON评估        | 评估JSON数据的一致性             | 基于规则 |                   |    `answer` `ideal`     |
-| JsonSchemaMatch | JSON评估        | 校验JSON是否符合预定义的Schema    | 基于规则 | `schema`: 预定义的JSON schema，JSON格式|   `answer`   |
-| Matchness           | 文本匹配      | 通过多种方式比较生成结果与理想答案是否匹配           | 基于规则 |  `match_rule`: 匹配规则<br/>   `ignore_case`: 是否忽略大小写          |   `answer` `ideal`   |
-| Regex           | 正则表达式评估      | 自定义正则表达式进行评估           | 基于规则 |  `regex`: 用于校验的正则表达式             |   `answer` `ideal`   |
+| Evaluator Name           | Category       | Description                          | Implementation Mechanism  | Required kwargs Parameters        | Required Data Components          |
+|--------------------------|----------------|--------------------------------------|---------------------------|-----------------------------------|------------------------------------|
+| [Faithfulness](/polyeval/faithfulness.py)             | RAG Evaluation | Evaluates the accuracy of the generated results | Based on large model prompts  | `llm`: dictionary of model call parameters | `answer` `context`                |
+| [AnswerRelevancy](/polyeval/answer_relevancy.py)          | RAG Evaluation | Evaluates the relevancy of the generated answer | Based on large model prompts  | `llm`: dictionary of model call parameters | `question` `answer`               |
+| [ContextRecall](/polyeval/context_recall.py)            | RAG Evaluation | Evaluates context recall rate        | Based on large model prompts  | `llm`: dictionary of model call parameters | `context` `ideal`                 |
+| [ContextPrecision](/polyeval/context_precision.py)         | RAG Evaluation | Evaluates context precision          | Based on large model prompts  | `llm`: dictionary of model call parameters | `question` `context`              |
+| [CustomYaml](/polyeval/custom_yaml.py)               | Large Model Evaluation | Evaluates based on custom YAML configuration | Based on large model prompts  | `yaml_specs`: YAML format evaluation configuration file <br/> `llm`: dictionary of model call parameters | `question` `answer` `context` `ideal` |
+| [StringDistanceEvaluator](/polyeval/string_distance.py)  | Text Similarity            | Compares the distance between strings     | Based on comparison algorithms | `metric`: text comparison algorithm in string format | `answer` `ideal`                  |
+| [EmbeddingDistanceEvaluator](/polyeval/embedding_distance.py) | Text Similarity         | Computes similarity based on embedding distance | Based on embedding model and comparison algorithms | `metric`: vector comparison algorithm in string format <br/> `embedding`: dictionary of model call parameters | `answer` `ideal`                  |
+| [LLMSimilarity](/polyeval/llm_similarity.py)            | Text Similarity            | Uses large model for semantic comparison  | Based on large model prompts  | `llm`: dictionary of model call parameters | `answer` `ideal`                  |
+| [IsJson](/polyeval/json.py)                   | JSON Evaluation             | Validates JSON format correctness         | Based on rules             |                                    | `answer`                           |
+| [JsonMatch](/polyeval/json.py)                | JSON Evaluation             | Evaluates JSON data consistency           | Based on rules             |                                    | `answer` `ideal`                  |
+| [JsonSchemaMatch](/polyeval/json.py)          | JSON Evaluation             | Validates JSON conformity to predefined schema | Based on rules             | `schema`: predefined JSON schema in JSON format | `answer`                           |
+| [Matchness](/polyeval/matchness.py)                | Text Matching               | Compares generated results with ideal answers using various methods | Based on rules             | `match_rule`: matching rule <br/> `ignore_case`: whether to ignore case | `answer` `ideal`                  |
+| [Regex](/polyeval/regex.py)                    | Regular Expression Evaluation | Custom evaluations using regular expressions | Based on rules             | `regex`: regular expression for validation | `answer` `ideal`                  |
 
-## 多语言支持
+## Multilingual Support
 
-虽然一些评估框架提供了多语言的适配方案，但PolyEval的目标是提供更加完整的多语言支持，从评估提示语模版到计算规则等。目前调用评估器时使用的语言参数`lang`可以是`en`或`zh`，分别代表英文和简体中文。
+While some evaluation frameworks offer multilingual support, PolyEval aims to provide more comprehensive multilingual support, from evaluation prompt templates to calculation rules. Currently, the `lang` parameter used when calling the evaluator can be `en` for English or `zh` for Simplified Chinese.
 
 ```python
-# 使用英文提示语模版进行faithfulness评估
+# Evaluate faithfulness using English prompt template
 eval_results = evaluate(dataset, [faithfulness], "en", **kwargs)
 
-# 使用简体中文提示语模版进行faithfulness评估
+# Evaluate faithfulness using Simplified Chinese prompt template
 eval_results = evaluate(dataset, [faithfulness], "zh", **kwargs)
 ```
 
-未来，我们希望能够在社区的支持和帮助下，逐步增加更多语言的支持。
+In the future, we hope to gradually add support for more languages with the help and support of the community.
 
-以下是一个大模型评级的YAML配置示例：
-    
+Here is an example of a large model rating YAML configuration:
+
 ```yaml
 prompt: |-
   You are comparing a submitted answer to an expert answer on a given question. Here is the data:
@@ -147,13 +153,13 @@ reverse_score: 0
 answer_prompt: ""
 ```
 
-具体的YAML配置文件格式可以参考[https://docs.evalsone.com/Faq/Metrics/setting_custom_rating_metrics/]
+The format of the YAML file configuration can be referenced at [https://docs.evalsone.com/Faq/Metrics/setting_custom_rating_metrics/].
 
-## 模型的集成 Model Integration
+## Model Integration
 
-PolyEval能够通过UnionLLM可以自由集成数百种大语言模型用于评估，还通过LangChain使用嵌入模型。
+PolyEval can freely integrate hundreds of large language models for evaluation through UnionLLM, and it also uses LangChain for embedding models.
 
-例如：如果在调用faithfulness评估器时，需要使用OpenAI的gpt-4o模型，可以通过以下方式进行配置：
+For example, if you need to use OpenAI's gpt-4o model when calling the Faithfulness evaluator, you can configure it as follows:
 
 ```python
 kwargs = {}
@@ -161,7 +167,7 @@ kwargs[`llm`] = {`provider`: `openai`, `model`: `gpt-4o`, `temperature`: 0.0}
 eval_results = evaluate(dataset, [faithfulness], "en", **kwargs)
 ```
 
-如果更换成Anthropic提供的模型，只需要将传入的字典更新成：
+If you switch to a model provided by Anthropic, you only need to update the dictionary to:
 
 ```python
 kwargs = {}
@@ -169,40 +175,43 @@ kwargs[`llm`] = {`provider`: `anthropic`, `model`: `claude-3-orpus`, `temperatur
 eval_results = evaluate(dataset, [faithfulness], "en", **kwargs)
 ```
 
-通过UnionLLM调用各种大模型的方式可以参照：
-https://github.com/EvalsOne/UnionLLM
+The method for calling various large models through UnionLLM can be referred to:
+https://github.com/EvalsOne/UnionLLM.
 
-如果评估中需要使用嵌入模型，可以通过以下方式进行配置：
+If you need to use an embedding model in the evaluation, you can configure it as follows:
 
 ```python
 kwargs = {}
 kwargs[`embedding`] = {`provider_cls`: `OpenAIEmbeddings`, `model`: `text-embedding-3-large`}
 ```
 
-目前`provider_cls`暂时只支持OpenAIEmbeddings和CohereEmbeddings两种。
+At present, `provider_cls` temporarily only supports OpenAIEmbeddings, CohereEmbeddings, and BaichuanTextEmbeddings. Future versions will expand to support more embedding models.
 
-## 单元测试
+## Unit Testing
 
-PolyEval提供了一系列单元测试脚本，可以通过以下方式进行批量测试。测试前需要安装pytest，并且在脚本中将调用模型所必需的大模型环境变量设置好，如API Key。
+PolyEval offers a series of unit testing scripts that can be tested in batch as follows. You need to install pytest before testing, and set the necessary large model environment variables such as API Key in the script.
 
 ```bash
 pytest tests
 ```
 
-或者，可以通过以下方式进行单个测试（忽略警告）：
+Alternatively, you can run a single test (ignoring warnings) as follows:
 
 ```bash
 pytest tests/test_faithfulness.py -W ignore
 ```
 
-## 使用EvalsOne云端评估
+## Using EvalsOne Cloud Evaluation
 
-[EvalsOne](https://evalsone.com)是一个评估LLM系统的完整解决方案，它不仅提供了云端的评估运行环境（PolyEval中的所有评估器都可以在EvalsOne运行），还提供了方便的样本管理、模型调用、可视化结果分析，以及通过Fork的方式迭代评估等功能。[了解更多](https://docs.evalsone.com)
+[EvalsOne](https://evalsone.com) is a comprehensive solution for evaluating LLM systems. It not only provides a cloud-based evaluation environment where all evaluators in PolyEval can run, but also offers convenient sample management, model calls, visualization of results, and functionality such as iterating evaluations through Forks. [Learn more](https://docs.evalsone.com)
 
-## 参与PolyEval项目
+## Contributing to the PolyEval Project
 
-PolyEval欢迎社区参与和贡献。用户可以通过提交代码、改进文档、提供多语言的提示语模版，或提供新的评估器算法来参与到项目的发展中。社区的积极参与将有助于不断提升PolyEval的功能和性能，推动大语言模型评估技术的发展。
+PolyEval welcomes community participation and contributions. Users can participate in the development of the project by submitting code, improving documentation, providing multilingual prompt templates, or offering new evaluator algorithms. Active community involvement will help continuously enhance the functionality and performance of PolyEval, driving the development of large language model evaluation technology.
 
-## ❤️ 感谢
+## ❤️ Acknowledgements
 
-在项目开发过程中，我们从Ragas, OpenAI Evals中得到了很多启发，并参考了它们的实现代码和评估配置，为此我们在这里表示深深的感谢。
+During the development of this project, we were inspired by Ragas, OpenAI Evals, and referred to their implementation code and evaluation configurations. We express our deep gratitude here.
+```
+
+If there are any additional sections in need of translation, please let me know!

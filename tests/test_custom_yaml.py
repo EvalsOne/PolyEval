@@ -54,9 +54,10 @@ choice_strings: 'YN'
 threshold: 1
 """
 
-zhipu_params = {
-    "provider": "zhipuai",
-    "model": "glm-4",
+os.environ["OPENAI_API_KEY"]='your_openai_api_key_here'
+eval_params = {
+    "provider": "openai",
+    "model": "gpt-4o",
     "temperature": 0.1,
     "stream": False
 }
@@ -68,7 +69,7 @@ dataset = Dataset.from_dict({
 })
 
 kwargs = {}
-kwargs["llm"] = zhipu_params
+kwargs["llm"] = eval_params
 kwargs["yaml_spec"] = fact_spec
 
 @pytest.mark.parametrize("evaluators, lang, kwargs", [

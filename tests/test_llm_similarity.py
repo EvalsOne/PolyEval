@@ -22,9 +22,10 @@ dataset = Dataset.from_dict({
     'ideal': [ideal]
 })
 
+os.environ["OPENAI_API_KEY"]='your_openai_api_key_here'
 eval_params = {
-    "provider": "zhipuai",
-    "model": "glm-4",
+    "provider": "openai",
+    "model": "gpt-4o",
     "temperature": 0.1,
     "stream": False
 }
