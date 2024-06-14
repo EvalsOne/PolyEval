@@ -78,13 +78,14 @@ Supports multiple JSON-related evaluation methods, specifically:
 - JSON format validation
 - JSON Matchness
 - JSON Schema Validate
-The scores range from 0 to 1. 0 means fail, 1 means pass.
+
+The final score is 0 or 1, where 0 means fail and 1 means pass.
 
 ### **Text Matching**
-Supports multiple text matching methods, specifically `match`, `include`, `startswith`, `endswith`, `fuzzy_match`, and optionally ignoring case in comparisons. The scores range from 0 to 1. 0 means fail, 1 means pass.
+Supports multiple text matching methods, specifically `match`, `include`, `startswith`, `endswith`, `fuzzy_match`, and optionally ignoring case in comparisons. The final score is 0 or 1, where 0 means fail and 1 means pass.
 
 ### **Regular Expression Evaluations**
-Custom regular expression evaluations. The scores range from 0 to 1. 0 means fail, 1 means pass.
+Custom regular expression evaluations. The final score is 0 or 1, where 0 means fail and 1 means pass.
 
 ## Supported Evaluator List
 
