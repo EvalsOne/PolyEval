@@ -23,7 +23,7 @@ pip install -e .
 ```python
 import os
 from datasets import Dataset 
-from polyeval import evaluate, LLMSimilarity
+from polyeval import evaluate, Faithfulness
 
 os.environ["OPENAI_API_KEY"] = "your-openai-key"
 
@@ -36,7 +36,7 @@ dataset = Dataset.from_dict({
 
 kwargs = {}
 kwargs[`llm`] = {`provider`: `openai`, `model`: `gpt-4o`, `temperature`: 0.0}
-eval_results = evaluate(dataset, [faithfulness], "en", **kwargs)
+eval_results = evaluate(dataset, [Faithfulness], "en", **kwargs)
 ```
 Here, `Faithfulness` is a RAG evaluator, `dataset` is a dataset containing the question, answer, context, and ideal answer, `en` is the language of the prompt template, and `**kwargs` are the parameters passed to the evaluator, which vary for different evaluators.
 

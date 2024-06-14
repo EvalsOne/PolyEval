@@ -24,7 +24,7 @@ pip install -e .
 ```python
 import os
 from datasets import Dataset 
-from polyeval import evaluate, LLMSimilarity
+from polyeval import evaluate, Faithfulness
 
 os.environ["OPENAI_API_KEY"] = "your-openai-key"
 
@@ -37,7 +37,7 @@ dataset = Dataset.from_dict({
 
 kwargs = {}
 kwargs[`llm`] = {`provider`: `openai`, `model`: `gpt-4o`, `temperature`: 0.0}
-eval_results = evaluate(dataset, [faithfulness], "en", **kwargs)
+eval_results = evaluate(dataset, [Faithfulness], "en", **kwargs)
 ```
 其中，`Faithfulness`是一个RAG评估器，`dataset`是一个包含了问题、答案、上下文和理想答案的数据集，`en`是提示语模版的语言，`**kwargs`是传递给评估器的参数，不同评估器需要接收的参数是不同的。
 
